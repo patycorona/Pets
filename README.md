@@ -1,5 +1,7 @@
 # Pets
-Icono de mascota![Uploading iconPets.jpeg…]()
+
+Icono de mascota. 
+![iconPet](https://user-images.githubusercontent.com/65816817/182432627-d1dd81ad-a8e9-4591-9bfe-93f376d14e5b.jpeg)
 
 
 Splash muestra una imagen en movimiento.
