@@ -4,6 +4,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class ResultModel(
-    var code: String,
+    var code: String = "",
     var message: String = ""
 ) : Parcelable

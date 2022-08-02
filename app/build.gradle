@@ -125,15 +125,14 @@ dependencies {
         implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$rxJava2Adapter"
         implementation "com.squareup.okhttp3:logging-interceptor:$loginInterceptor"
 
-        //Texting
-        testImplementation "junit:junit:$jUnit"
-        testImplementation "org.hamcrest:java-hamcrest:$hamcrestVersion"
-        testImplementation "org.assertj:assertj-core:$assertJVersion"
-        testImplementation "org.mockito:mockito-core:$mockitoVersion"
-        testImplementation "com.haarman.mockitokotlin2:mockito-kotlin:$mockitokotlin2Version"
-        testImplementation "androidx.arch.core:core-testing:$testArchCoreVersion"
-        androidTestImplementation "android.text.ext:junit:$jUnitExt"
-        androidTestImplementation "android.text.expresso:expresso-core:$expresso"
-        testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion"
-        androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
+        // For instrumentation tests
+        testImplementation "junit:junit:4.13.2"
+        testImplementation "org.assertj:assertj-core:3.8.0"
+        testImplementation "org.mockito:mockito-core:3.10.0"
+        testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+        testImplementation "androidx.arch.core:core-testing:2.0.0"
+
+        testImplementation("org.mockito:mockito-inline:2.8.47")
+
+
 }
