@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity() {
 
      fun changeScreen(typeScreen: Screen) {
         when (typeScreen) {
+            Screen.MainVisit ->{
+                openHomeFragment()
+                createControlVisible(false)
+            }
             Screen.LoginFragment -> {
                 openLoginFragment()
                 createControlVisible(false)

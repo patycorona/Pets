@@ -50,6 +50,10 @@ class LoginFragment : Fragment() {
             (activity as MainActivity)
                 .changeScreen(Screen.UserRegisterFragment)
         }
+        binding?.tvEmailVisitante?.setOnClickListener {
+            (activity as MainActivity)
+                .changeScreen(Screen.MainVisit)
+        }
 
     }
 
