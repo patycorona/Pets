@@ -1,9 +1,10 @@
-package com.example.myapppets.ui.login.viewmodel
+package com.example.myapppets.ui.petregister.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.myapppets.data.model.request.UserAccessRequest
+import com.example.myapppets.data.model.request.PetRequest
 import com.example.myapppets.domian.model.ResultModel
-import com.example.myapppets.domian.usecase.UserAccessUseCase
+import com.example.myapppets.domian.usecase.PetRegisterUseCase
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -19,21 +20,21 @@ import org.junit.rules.TestRule
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class UserAccessViewModelTest{
+class PetRegisterViewModelTest{
 
-    private lateinit var viewModel: UserAccessViewModel
+    private lateinit var petRegisterViewModel: PetRegisterViewModel
 
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var userAccessUseCase: UserAccessUseCase
+    private lateinit var petRegisterUseCase: PetRegisterUseCase
 
     @Mock
     private lateinit var observer : androidx.lifecycle.Observer<ResultModel>
 
-    private val userRequest = UserAccessRequest(email = "test@admin.com", password = "Password123")
-    private val userRequestError = UserAccessRequest(email = "test@admin.com", password = "")
+    private val petRequest = PetRequest("Drako","jugueton","labrador","Perruchis","123456978")
+    private val petRequestError = PetRequest("Drako","jugueton","labrador","Perruchis","")
 
     private var resultModel = ResultModel()
     var resultModelError = ResultModel()
@@ -49,11 +50,10 @@ class UserAccessViewModelTest{
     }
 
     private fun initObjectMock() {
-
         resultModel = ResultModel(
             code = "0",
             message = "Sucessfull"
-            )
+        )
 
         resultModelError = ResultModel(
             code = "-1",
@@ -63,7 +63,7 @@ class UserAccessViewModelTest{
 
     private fun initObserver()
     {
-        viewModel.userResultModel.observeForever(observer)
+        petRegisterViewModel.petResult.observeForever(observer)
     }
 
     private fun setUpRxSchedulers() {
@@ -74,12 +74,12 @@ class UserAccessViewModelTest{
     }
 
     private fun initControllers() {
-        whenever(userAccessUseCase.userAccess(userRequest)).thenReturn(
+        whenever(petRegisterUseCase.petRegister(any())).thenReturn(
             Single.just(
                 resultModel
             )
         )
-        whenever(userAccessUseCase.userAccess(userRequestError)).thenReturn(
+        whenever(petRegisterUseCase.petRegister(petRequestError)).thenReturn(
             Single.just(
                 resultModelError
             )
@@ -87,28 +87,29 @@ class UserAccessViewModelTest{
     }
 
     private fun initializeViewModel() {
-        viewModel = UserAccessViewModel(
-            userAccessUseCase
+        petRegisterViewModel = PetRegisterViewModel(
+            petRegisterUseCase
         )
     }
 
     @Test
-    fun `When call userAccess then execute one time userAccess `() {
-        viewModel.userValidation( "test@admin.com", "Password123")
-        verify(userAccessUseCase, times(1)).userAccess(userRequest)
+    fun `When call petRegister then execute one time petRegister `() {
+        petRegisterViewModel.petRegister( "Drako","jugueton","labrador","Perruchis","123456978")
+        verify(petRegisterUseCase, times(1)).petRegister(petRequest)
     }
 
     @Test
-    fun `When call userAccess then return sucessfull response `() {
-        viewModel.userValidation( "test@admin.com", "Password123")
-        assertEquals(viewModel.userResultModel.value?.code, "0")
-        assertEquals(viewModel.userResultModel.value?.message, "Sucessfull")
+    fun `When call petRegister then return sucessfull response `() {
+        petRegisterViewModel.petRegister( "Drako","jugueton","labrador","Perruchis","123456978")
+        assertEquals(petRegisterViewModel.petResult.value?.code, "0")
+        assertEquals(petRegisterViewModel.petResult.value?.message, "Sucessfull")
     }
 
     @Test
-    fun `When call userAccess then return error response `() {
-        viewModel.userValidation( "test@admin.com", "")
-        assertEquals(viewModel.userResultModel.value?.code, "-1")
+    fun `When call petRegister then return error response `() {
+        petRegisterViewModel.petRegister( "Drako","jugueton","labrador","Perruchis","")
+        assertEquals(petRegisterViewModel.petResult.value?.code, "-1")
     }
 
 }
+

@@ -2,7 +2,7 @@ package com.example.myapppets.data.model.request
 
 import com.google.gson.annotations.SerializedName
 
-class PetRequest (
+data class PetRequest (
     @SerializedName("name") val name: String = "",
     @SerializedName("type") val type: String = "",
     @SerializedName("raza") val raza: String = "",

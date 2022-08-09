@@ -1,9 +1,9 @@
-package com.example.myapppets.ui.login.viewmodel
+package com.example.myapppets.domian.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.myapppets.data.model.request.UserAccessRequest
+import com.example.myapppets.data.model.request.PetRequest
+import com.example.myapppets.data.repository.PetRegisterRepository
 import com.example.myapppets.domian.model.ResultModel
-import com.example.myapppets.domian.usecase.UserAccessUseCase
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -19,21 +19,17 @@ import org.junit.rules.TestRule
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class UserAccessViewModelTest{
-
-    private lateinit var viewModel: UserAccessViewModel
+class PetRegisterUseCaseTest{
+    private lateinit var petRegisterUseCase: PetRegisterUseCase
 
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var userAccessUseCase: UserAccessUseCase
+    private lateinit var petRegisterRepository: PetRegisterRepository
 
-    @Mock
-    private lateinit var observer : androidx.lifecycle.Observer<ResultModel>
-
-    private val userRequest = UserAccessRequest(email = "test@admin.com", password = "Password123")
-    private val userRequestError = UserAccessRequest(email = "test@admin.com", password = "")
+    private val petRequest = PetRequest("Drako","jugueton","labrador","Perruchis","123456978")
+    private val petRequestError = PetRequest("Drako","jugueton","labrador","Perruchis","")
 
     private var resultModel = ResultModel()
     var resultModelError = ResultModel()
@@ -44,8 +40,7 @@ class UserAccessViewModelTest{
         setUpRxSchedulers()
         initObjectMock()
         initControllers()
-        initializeViewModel()
-        initObserver()
+        initialize_useCase()
     }
 
     private fun initObjectMock() {
@@ -53,17 +48,12 @@ class UserAccessViewModelTest{
         resultModel = ResultModel(
             code = "0",
             message = "Sucessfull"
-            )
+        )
 
         resultModelError = ResultModel(
             code = "-1",
             message = "Error"
         )
-    }
-
-    private fun initObserver()
-    {
-        viewModel.userResultModel.observeForever(observer)
     }
 
     private fun setUpRxSchedulers() {
@@ -74,41 +64,44 @@ class UserAccessViewModelTest{
     }
 
     private fun initControllers() {
-        whenever(userAccessUseCase.userAccess(userRequest)).thenReturn(
+        whenever(petRegisterRepository.petRegister(petRequest)).thenReturn(
             Single.just(
                 resultModel
             )
         )
-        whenever(userAccessUseCase.userAccess(userRequestError)).thenReturn(
+        whenever(petRegisterRepository.petRegister(petRequestError)).thenReturn(
             Single.just(
                 resultModelError
             )
         )
     }
 
-    private fun initializeViewModel() {
-        viewModel = UserAccessViewModel(
-            userAccessUseCase
+    private fun initialize_useCase() {
+        petRegisterUseCase = PetRegisterUseCase(
+            petRegisterRepository
         )
     }
 
     @Test
-    fun `When call userAccess then execute one time userAccess `() {
-        viewModel.userValidation( "test@admin.com", "Password123")
-        verify(userAccessUseCase, times(1)).userAccess(userRequest)
+    fun `When call petRegister then execute one time petRegister `() {
+        val petRequest = PetRequest("Drako","jugueton","labrador","Perruchis", "123456978")
+        petRegisterUseCase.petRegister(petRequest)
+        verify(petRegisterRepository, times(1)).petRegister(petRequest)
     }
 
     @Test
-    fun `When call userAccess then return sucessfull response `() {
-        viewModel.userValidation( "test@admin.com", "Password123")
-        assertEquals(viewModel.userResultModel.value?.code, "0")
-        assertEquals(viewModel.userResultModel.value?.message, "Sucessfull")
+    fun `When call petRegister then return sucessfull response `() {
+        val userRegisterRequest = PetRequest("Drako","jugueton","labrador","Perruchis", "123456978")
+        petRegisterUseCase.petRegister(userRegisterRequest)
+        assertEquals(resultModel.code, "0")
+        assertEquals(resultModel.message, "Sucessfull")
     }
 
     @Test
-    fun `When call userAccess then return error response `() {
-        viewModel.userValidation( "test@admin.com", "")
-        assertEquals(viewModel.userResultModel.value?.code, "-1")
+    fun `When call userRegister then return error response `() {
+        val petRegisterRequest = PetRequest("Pepito","Clavo", "test@admin.com", "")
+        petRegisterUseCase.petRegister(petRegisterRequest)
+        assertEquals(resultModelError.code, "-1")
     }
 
 }

@@ -1,9 +1,10 @@
-package com.example.myapppets.ui.login.viewmodel
+package com.example.myapppets.ui.register.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.myapppets.data.model.request.UserAccessRequest
+import androidx.lifecycle.Observer
+import com.example.myapppets.data.model.request.UserRequest
 import com.example.myapppets.domian.model.ResultModel
-import com.example.myapppets.domian.usecase.UserAccessUseCase
+import com.example.myapppets.domian.usecase.UserRegisterUseCase
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -19,21 +20,21 @@ import org.junit.rules.TestRule
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class UserAccessViewModelTest{
+class UserRegisterViewModelTest{
 
-    private lateinit var viewModel: UserAccessViewModel
+    private lateinit var userRegisterViewModel: UserRegisterViewModel
 
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var userAccessUseCase: UserAccessUseCase
+    private lateinit var userRegisterUseCase: UserRegisterUseCase
 
     @Mock
-    private lateinit var observer : androidx.lifecycle.Observer<ResultModel>
+    private lateinit var observe : Observer<ResultModel>
 
-    private val userRequest = UserAccessRequest(email = "test@admin.com", password = "Password123")
-    private val userRequestError = UserAccessRequest(email = "test@admin.com", password = "")
+    private val userRequest = UserRequest(name = "Prue", lastName = "Unitarian", email = "test@admin.com", password = "Password123")
+    private val userRequestError = UserRequest(name = "Prue", lastName = "Unitarian", email = "test@admin.com", password = "")
 
     private var resultModel = ResultModel()
     var resultModelError = ResultModel()
@@ -45,25 +46,22 @@ class UserAccessViewModelTest{
         initObjectMock()
         initControllers()
         initializeViewModel()
-        initObserver()
+        iniObserver()
     }
 
     private fun initObjectMock() {
-
         resultModel = ResultModel(
             code = "0",
             message = "Sucessfull"
-            )
+        )
 
         resultModelError = ResultModel(
             code = "-1",
             message = "Error"
         )
     }
-
-    private fun initObserver()
-    {
-        viewModel.userResultModel.observeForever(observer)
+    private fun iniObserver(){
+        userRegisterViewModel.userResultModel.observeForever(observe)
     }
 
     private fun setUpRxSchedulers() {
@@ -74,12 +72,12 @@ class UserAccessViewModelTest{
     }
 
     private fun initControllers() {
-        whenever(userAccessUseCase.userAccess(userRequest)).thenReturn(
+        whenever(userRegisterUseCase.userRegister(userRequest)).thenReturn(
             Single.just(
                 resultModel
             )
         )
-        whenever(userAccessUseCase.userAccess(userRequestError)).thenReturn(
+        whenever(userRegisterUseCase.userRegister(userRequestError)).thenReturn(
             Single.just(
                 resultModelError
             )
@@ -87,28 +85,28 @@ class UserAccessViewModelTest{
     }
 
     private fun initializeViewModel() {
-        viewModel = UserAccessViewModel(
-            userAccessUseCase
+        userRegisterViewModel = UserRegisterViewModel(
+            userRegisterUseCase
         )
     }
 
     @Test
-    fun `When call userAccess then execute one time userAccess `() {
-        viewModel.userValidation( "test@admin.com", "Password123")
-        verify(userAccessUseCase, times(1)).userAccess(userRequest)
+    fun `When call userRegister then execute one time userAccess `() {
+        userRegisterViewModel.userRegister( "Prue","Unitarian","test@admin.com", "Password123")
+        verify(userRegisterUseCase, times(1)).userRegister(userRequest)
     }
 
     @Test
-    fun `When call userAccess then return sucessfull response `() {
-        viewModel.userValidation( "test@admin.com", "Password123")
-        assertEquals(viewModel.userResultModel.value?.code, "0")
-        assertEquals(viewModel.userResultModel.value?.message, "Sucessfull")
+    fun `When call userRegister then return sucessfull response `() {
+        userRegisterViewModel.userRegister( "Prue","Unitarian","test@admin.com", "Password123")
+        assertEquals(userRegisterViewModel.userResultModel.value?.code, "0")
+        assertEquals(userRegisterViewModel.userResultModel.value?.message, "Sucessfull")
     }
 
     @Test
-    fun `When call userAccess then return error response `() {
-        viewModel.userValidation( "test@admin.com", "")
-        assertEquals(viewModel.userResultModel.value?.code, "-1")
+    fun `When call userRegister then return error response `() {
+        userRegisterViewModel.userRegister( "Prue","Unitarian","test@admin.com","")
+        assertEquals(userRegisterViewModel.userResultModel.value?.code, "-1")
     }
 
 }

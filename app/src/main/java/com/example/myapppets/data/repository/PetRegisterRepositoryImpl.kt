@@ -13,7 +13,6 @@ class PetRegisterRepositoryImpl @Inject constructor (var apiService: CoreHomeApi
 
     override fun petRegister(petRequest: PetRequest): Single<ResultModel> =
         apiService.petRegister(petRequest)
-
             .map { userResult ->
                 userResult.toModel()
             }

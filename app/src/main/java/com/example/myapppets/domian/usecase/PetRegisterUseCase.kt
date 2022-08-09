@@ -11,4 +11,6 @@ class PetRegisterUseCase @Inject constructor (
     ) {
     fun petRegister(petRequest: PetRequest): Single<ResultModel> =
         petRegisterRepository.petRegister(petRequest)
+
+
 }
