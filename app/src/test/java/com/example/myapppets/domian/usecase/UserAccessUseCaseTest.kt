@@ -21,27 +21,20 @@ import org.mockito.MockitoAnnotations
 
 class UserAccessUseCaseTest {
 
-    //Creamos instancia de UseCase
     private lateinit var useCase: UserAccessUseCase
 
-    //hace la config. para las pruebas en otro lugar
-    // y que todos los métodos den Before se emulen
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    //Hacemos el mock de reposotory
     @Mock
     private lateinit var userAccessRepository: UserAccessRepository
 
-    // le pasomos valores a las variables para probar el requerimiento y error, datos de entrada
     private val userRequest = UserAccessRequest(email = "test@admin.com", password = "Password123")
     private val userRequestError = UserAccessRequest(email = "test@admin.com", password = "")
 
-    //asignamos variables con los resultados de las pruebas
     private var resultModel = ResultModel()
     var resultModelError = ResultModel()
 
-    //inicializamos la simulación de la instancia de los objetos
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -51,7 +44,6 @@ class UserAccessUseCaseTest {
         initializeViewModel()
     }
 
-    // asignamos la valores a los objetos de respuesta si es correcta y error
     private fun initObjectMock() {
 
         resultModel = ResultModel(
@@ -65,7 +57,6 @@ class UserAccessUseCaseTest {
         )
     }
 
-    // simular  la ejecución en el hilo secundario RX programación reactiva
     private fun setUpRxSchedulers() {
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxJavaPlugins.setComputationSchedulerHandler { Schedulers.trampoline() }
@@ -73,8 +64,6 @@ class UserAccessUseCaseTest {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
-    //validacion de la pruba cuando le pasen los datos correctos que regrese el resulMol
-    // y cuando no que responda resultModelError
     private fun initControllers() {
         whenever(userAccessRepository.userAccess(userRequest)).thenReturn(
             Single.just(
@@ -88,14 +77,12 @@ class UserAccessUseCaseTest {
         )
     }
 
-    //inicializamos el usecase
     private fun initializeViewModel() {
         useCase = UserAccessUseCase(
             userAccessRepository
         )
     }
 
-    //verificar que se ejecute esta función almenos 1 vez pasandole sus parametros
     @Test
     fun `When call userAccess then execute one time userAccess `() {
 
@@ -104,7 +91,6 @@ class UserAccessUseCaseTest {
         verify(userAccessRepository, times(1)).userAccess(userRequest)
     }
 
-    //cuando llamas la función userAccess y todo esta correcto
     @Test
     fun `When call userAccess then return sucessfull response `() {
         val userAccessRequest = UserAccessRequest("test@admin.com", "Password123")
@@ -112,7 +98,7 @@ class UserAccessUseCaseTest {
         assertEquals(resultModel.code, "0")
         assertEquals(resultModel.message, "Sucessfull")
     }
-    // cuando llamas a userAccess y mandas un dato mal te responde un error
+
     @Test
     fun `When call userAccess then return error response `() {
         val userAccessRequest = UserAccessRequest("test@admin.com", "")
